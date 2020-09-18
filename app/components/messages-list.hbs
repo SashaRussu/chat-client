@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="messages-list">
+    <ul>
+      {{#each this.messages as |message|}}
+        <li>
+          <span class="messages-list__message__user-name">{{message.userName}}</span>
+          <span>{{message.text}}</span>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+  <div class="actions-container">
+    <div class="input-container">
+      <textarea class="input-container__textarea" autofocus required value={{this.inputText}} {{on 'input' this.onInputChange}}></textarea>
+    </div>
+    <div class="button-container">
+      <button class="button-container__button" {{on 'click' this.onSendMessage}}>Send</button>
+    </div>
+  </div>
+</div>
