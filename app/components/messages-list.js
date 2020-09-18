@@ -6,29 +6,20 @@ import io from 'socket.io-client'
 export default class MessagesListComponent extends Component {
   @tracked messages = [
     {
-      userName: 'ololo',
-      text: 'helloEveryone',
+      userName: 'bot',
+      text: 'Hello',
     },
   ]
 
+  @tracked userName
   @tracked inputText = ''
 
   constructor(...args) {
     super(...args)
 
-    this.socket = io('http://localhost:3000', {
-      query: {
-        // userName: 'ololo',
-      },
-    })
+    this.socket = io('http://localhost:3000')
 
     const userName = localStorage.getItem('userName')
-
-    if (!userName) {
-      this.initUserName()
-    } else {
-      this.socket.emit('initUser', userName)
-    }
 
     this.socket.on('nameIsBusy', () => {
       alert('This name is busy')
@@ -37,10 +28,18 @@ export default class MessagesListComponent extends Component {
     })
 
     this.socket.on('userInitialized', (userName) => {
+      this.userName = userName
+
       localStorage.setItem('userName', userName)
     })
 
     this.socket.on('newMessage', this.update)
+
+    if (!userName) {
+      this.initUserName()
+    } else {
+      this.socket.emit('initUser', userName)
+    }
   }
 
   initUserName() {
@@ -59,7 +58,7 @@ export default class MessagesListComponent extends Component {
 
   @action onSendMessage() {
     this.socket.emit('newMessage', {
-      userName: localStorage.getItem('userName'),
+      userName: this.userName,
       text: this.inputText,
     })
 
