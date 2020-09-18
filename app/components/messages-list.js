@@ -10,6 +10,7 @@ export default class MessagesListComponent extends Component {
       text: 'Hello',
     },
   ]
+  @tracked users = []
 
   @tracked userName
   @tracked inputText = ''
@@ -33,7 +34,8 @@ export default class MessagesListComponent extends Component {
       localStorage.setItem('userName', userName)
     })
 
-    this.socket.on('newMessage', this.update)
+    this.socket.on('newMessage', this.updateMessages)
+    this.socket.on('usersChanged', this.changeUsers)
 
     if (!userName) {
       this.initUserName()
@@ -65,7 +67,11 @@ export default class MessagesListComponent extends Component {
     this.inputText = ''
   }
 
-  @action update(msg) {
+  @action updateMessages(msg) {
     this.messages = [...this.messages, msg]
+  }
+
+  @action changeUsers(newUsers) {
+    this.users = newUsers
   }
 }
